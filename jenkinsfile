@@ -6,10 +6,12 @@ pipeline {
 
     stages {
         stage('MVN Test') {
-            checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://www.jenkins.io/doc/book/pipeline/jenkinsfile/']])
-            bat "mvn -version"
-            dir("C:/dev/jenkins-hands-on"){
+            steps {
+                checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://www.jenkins.io/doc/book/pipeline/jenkinsfile/']])
+                bat "mvn -version"
+                dir("C:/dev/jenkins-hands-on"){
                 bat "mvn clean install"
+               }
             }
         }
         stage('Build the docker file') {
