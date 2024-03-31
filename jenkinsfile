@@ -32,7 +32,7 @@ pipeline {
                 script {
                     withCredentials([string(credentialsId: 'dockertoken', variable: 'dockertoken')]) {
                         bat "docker login -u zephyrpawan -p %dockertoken%"
-                        bat "docker push "zephyrpawan/jenkins-hands-on"
+                        bat "docker push zephyrpawan/jenkins-hands-on"
                     }
                 }
             }
