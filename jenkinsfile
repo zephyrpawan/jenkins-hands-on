@@ -1,0 +1,44 @@
+pipeline {
+    agent any
+    tools {
+        maven "maven"
+    }
+
+    stages {
+        stage('MVN Test') {
+            checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://www.jenkins.io/doc/book/pipeline/jenkinsfile/']])
+            bat "mvn -version"
+            dir("C:/dev/jenkins-hands-on"){
+                bat "mvn clean install"
+            }
+        }
+        stage('Build the docker file') {
+            steps {
+                echo 'Testing..'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                dir("C:/dev/jenkins-hands-on"){
+                    bat "docker build -t zephyrpawan/jenkins-hands-on ."
+                }
+            }
+        }
+
+        stage('Push the docker image') {
+            steps {
+                script {
+                    withCredentials([string(credentialsId: 'dockertoken', variable: 'dockertoken')]) {
+                        bat "docker login -u zephyrpawan -p %dockertoken%"
+                        bat "docker push "zephyrpawan/jenkins-hands-on"
+                    }
+                }
+            }
+        }
+    }
+    post {
+        always {
+            clearWs()
+        }
+    }
+}
